@@ -76,11 +76,11 @@ namespace GreenLight.Controllers
         }
 
         [HttpGet]
-        public void GeoCode()
+        public ActionResult GeoCode()
         {
             IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyB7Mcq6kcU87hlj3mi8AosJ1R20YETpvjk" };
 
-            IEnumerable<House> housesToUpdate = db.Houses.Where(i => !i.Latitude.HasValue || !i.Longitude.HasValue);
+            IEnumerable<House> housesToUpdate = db.Houses.Where(i => i.NeighborhoodID == NeighborhoodID && (!i.Latitude.HasValue || !i.Longitude.HasValue));
 
             foreach (House house in housesToUpdate)
             {
@@ -96,6 +96,8 @@ namespace GreenLight.Controllers
             }
 
             db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

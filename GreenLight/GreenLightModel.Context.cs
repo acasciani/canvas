@@ -29,5 +29,7 @@ namespace GreenLight
         public virtual DbSet<Respons> Responses { get; set; }
         public virtual DbSet<Visit> Visits { get; set; }
         public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
+        public virtual DbSet<Option> Options { get; set; }
+        public virtual DbSet<OptionType> OptionTypes { get; set; }
     }
 }

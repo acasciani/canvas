@@ -50,6 +50,9 @@ namespace GreenLight.Controllers
         // GET: Houses/Create
         public ActionResult Create()
         {
+            ViewBag.Cities = new SelectList(db.Options.Where(i => i.NeighborhoodID == NeighborhoodID && i.OptionTypeID == 2).OrderBy(i => i.Value), "Value", "Value");
+            ViewBag.ZipCodes = new SelectList(db.Options.Where(i => i.NeighborhoodID == NeighborhoodID && i.OptionTypeID == 1).OrderBy(i => i.Value), "Value", "Value");
+
             return View();
         }
 
@@ -58,7 +61,7 @@ namespace GreenLight.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "HouseID,Address")] House house)
+        public ActionResult Create([Bind(Include = "HouseID,Address,City,ZipCode")] House house)
         {
             if (ModelState.IsValid)
             {
@@ -83,6 +86,10 @@ namespace GreenLight.Controllers
             {
                 return HttpNotFound();
             }
+
+            ViewBag.Cities = new SelectList(db.Options.Where(i => i.NeighborhoodID == NeighborhoodID && i.OptionTypeID == 2).OrderBy(i => i.Value), "Value", "Value");
+            ViewBag.ZipCodes = new SelectList(db.Options.Where(i => i.NeighborhoodID == NeighborhoodID && i.OptionTypeID == 1).OrderBy(i => i.Value), "Value", "Value");
+
             return View(house);
         }
 
@@ -91,7 +98,7 @@ namespace GreenLight.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "HouseID,Address,Latitude,Longitude")] House house)
+        public ActionResult Edit([Bind(Include = "HouseID,Address,Latitude,Longitude,City,ZipCode,NeighborhoodID")] House house)
         {
             if (ModelState.IsValid)
             {

@@ -24,6 +24,8 @@ namespace GreenLight
         public Nullable<decimal> Latitude { get; set; }
         public Nullable<decimal> Longitude { get; set; }
         public int NeighborhoodID { get; set; }
+        public string City { get; set; }
+        public string ZipCode { get; set; }
     
         public virtual ICollection<Visit> Visits { get; set; }
         public virtual Neighborhood Neighborhood { get; set; }

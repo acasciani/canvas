@@ -12,6 +12,10 @@
         <AssociationConnector Association="GreenLightModel.FK_Visits_Responses" ManuallyRouted="false" />
         <EntityTypeShape EntityType="GreenLightModel.Neighborhood" Width="1.5" PointX="0.75" PointY="5.25" />
         <AssociationConnector Association="GreenLightModel.FK_Houses_Neighborhoods" />
+        <EntityTypeShape EntityType="GreenLightModel.Option" Width="1.5" PointX="3" PointY="5.5" />
+        <EntityTypeShape EntityType="GreenLightModel.OptionType" Width="1.5" PointX="0.75" PointY="8.75" />
+        <AssociationConnector Association="GreenLightModel.FK_Options_Neighborhoods" />
+        <AssociationConnector Association="GreenLightModel.FK_Options_OptionTypes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

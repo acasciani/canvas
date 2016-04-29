@@ -14,6 +14,8 @@
           <Property Name="Latitude" Type="decimal" Precision="9" Scale="6" />
           <Property Name="Longitude" Type="decimal" Precision="9" Scale="6" />
           <Property Name="NeighborhoodID" Type="int" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ZipCode" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="Neighborhoods">
           <Key>
@@ -25,6 +27,22 @@
           <Property Name="AdminEmail" Type="varchar" MaxLength="150" Nullable="false" />
           <Property Name="AdminPassPhrase" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="AdminUserName" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="OptionID" />
+          </Key>
+          <Property Name="OptionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NeighborhoodID" Type="int" Nullable="false" />
+          <Property Name="OptionTypeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OptionTypes">
+          <Key>
+            <PropertyRef Name="OptionTypeID" />
+          </Key>
+          <Property Name="OptionTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OptionTypeName" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Responses">
           <Key>
@@ -56,6 +74,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Options_Neighborhoods">
+          <End Role="Neighborhoods" Type="Self.Neighborhoods" Multiplicity="1" />
+          <End Role="Options" Type="Self.Options" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Neighborhoods">
+              <PropertyRef Name="NeighborhoodID" />
+            </Principal>
+            <Dependent Role="Options">
+              <PropertyRef Name="NeighborhoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Options_OptionTypes">
+          <End Role="OptionTypes" Type="Self.OptionTypes" Multiplicity="1" />
+          <End Role="Options" Type="Self.Options" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OptionTypes">
+              <PropertyRef Name="OptionTypeID" />
+            </Principal>
+            <Dependent Role="Options">
+              <PropertyRef Name="OptionTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Visits_Houses">
           <End Role="Houses" Type="Self.Houses" Multiplicity="1" />
           <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
@@ -83,11 +125,21 @@
         <EntityContainer Name="GreenLightModelStoreContainer">
           <EntitySet Name="Houses" EntityType="Self.Houses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Neighborhoods" EntityType="Self.Neighborhoods" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Options" EntityType="Self.Options" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OptionTypes" EntityType="Self.OptionTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Responses" EntityType="Self.Responses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Visits" EntityType="Self.Visits" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Houses_Neighborhoods" Association="Self.FK_Houses_Neighborhoods">
             <End Role="Neighborhoods" EntitySet="Neighborhoods" />
             <End Role="Houses" EntitySet="Houses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Options_Neighborhoods" Association="Self.FK_Options_Neighborhoods">
+            <End Role="Neighborhoods" EntitySet="Neighborhoods" />
+            <End Role="Options" EntitySet="Options" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Options_OptionTypes" Association="Self.FK_Options_OptionTypes">
+            <End Role="OptionTypes" EntitySet="OptionTypes" />
+            <End Role="Options" EntitySet="Options" />
           </AssociationSet>
           <AssociationSet Name="FK_Visits_Houses" Association="Self.FK_Visits_Houses">
             <End Role="Houses" EntitySet="Houses" />
@@ -113,6 +165,8 @@
           <Property Name="Longitude" Type="Decimal" Precision="9" Scale="6" />
           <Property Name="NeighborhoodID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Neighborhood" Relationship="GreenLightModel.FK_Houses_Neighborhoods" FromRole="House" ToRole="Neighborhood" />
+          <Property Name="City" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ZipCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Respons">
           <Key>
@@ -176,6 +230,16 @@
             <End Role="Neighborhood" EntitySet="Neighborhoods" />
             <End Role="House" EntitySet="Houses" />
           </AssociationSet>
+          <EntitySet Name="Options" EntityType="GreenLightModel.Option" />
+          <EntitySet Name="OptionTypes" EntityType="GreenLightModel.OptionType" />
+          <AssociationSet Name="FK_Options_Neighborhoods" Association="GreenLightModel.FK_Options_Neighborhoods">
+            <End Role="Neighborhood" EntitySet="Neighborhoods" />
+            <End Role="Option" EntitySet="Options" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Options_OptionTypes" Association="GreenLightModel.FK_Options_OptionTypes">
+            <End Role="OptionType" EntitySet="OptionTypes" />
+            <End Role="Option" EntitySet="Options" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Neighborhood">
           <Key>
@@ -188,6 +252,7 @@
           <Property Name="AdminPassPhrase" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="AdminUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Houses" Relationship="GreenLightModel.FK_Houses_Neighborhoods" FromRole="Neighborhood" ToRole="House" />
+          <NavigationProperty Name="Options" Relationship="GreenLightModel.FK_Options_Neighborhoods" FromRole="Neighborhood" ToRole="Option" />
         </EntityType>
         <Association Name="FK_Houses_Neighborhoods">
           <End Type="GreenLightModel.Neighborhood" Role="Neighborhood" Multiplicity="1" />
@@ -201,6 +266,49 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="OptionID" />
+          </Key>
+          <Property Name="OptionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NeighborhoodID" Type="Int32" Nullable="false" />
+          <Property Name="OptionTypeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Neighborhood" Relationship="GreenLightModel.FK_Options_Neighborhoods" FromRole="Option" ToRole="Neighborhood" />
+          <NavigationProperty Name="OptionType" Relationship="GreenLightModel.FK_Options_OptionTypes" FromRole="Option" ToRole="OptionType" />
+        </EntityType>
+        <EntityType Name="OptionType">
+          <Key>
+            <PropertyRef Name="OptionTypeID" />
+          </Key>
+          <Property Name="OptionTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OptionTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Options" Relationship="GreenLightModel.FK_Options_OptionTypes" FromRole="OptionType" ToRole="Option" />
+        </EntityType>
+        <Association Name="FK_Options_Neighborhoods">
+          <End Type="GreenLightModel.Neighborhood" Role="Neighborhood" Multiplicity="1" />
+          <End Type="GreenLightModel.Option" Role="Option" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Neighborhood">
+              <PropertyRef Name="NeighborhoodID" />
+            </Principal>
+            <Dependent Role="Option">
+              <PropertyRef Name="NeighborhoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Options_OptionTypes">
+          <End Type="GreenLightModel.OptionType" Role="OptionType" Multiplicity="1" />
+          <End Type="GreenLightModel.Option" Role="Option" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OptionType">
+              <PropertyRef Name="OptionTypeID" />
+            </Principal>
+            <Dependent Role="Option">
+              <PropertyRef Name="OptionTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -210,6 +318,8 @@
           <EntitySetMapping Name="Houses">
             <EntityTypeMapping TypeName="GreenLightModel.House">
               <MappingFragment StoreEntitySet="Houses">
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="NeighborhoodID" ColumnName="NeighborhoodID" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
@@ -247,6 +357,24 @@
                 <ScalarProperty Name="URLName" ColumnName="URLName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="NeighborhoodID" ColumnName="NeighborhoodID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="GreenLightModel.Option">
+              <MappingFragment StoreEntitySet="Options">
+                <ScalarProperty Name="OptionTypeID" ColumnName="OptionTypeID" />
+                <ScalarProperty Name="NeighborhoodID" ColumnName="NeighborhoodID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="OptionID" ColumnName="OptionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OptionTypes">
+            <EntityTypeMapping TypeName="GreenLightModel.OptionType">
+              <MappingFragment StoreEntitySet="OptionTypes">
+                <ScalarProperty Name="OptionTypeName" ColumnName="OptionTypeName" />
+                <ScalarProperty Name="OptionTypeID" ColumnName="OptionTypeID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

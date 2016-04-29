@@ -12,22 +12,16 @@ namespace GreenLight
     using System;
     using System.Collections.Generic;
     
-    public partial class Neighborhood
+    public partial class OptionType
     {
-        public Neighborhood()
+        public OptionType()
         {
-            this.Houses = new HashSet<House>();
             this.Options = new HashSet<Option>();
         }
     
-        public int NeighborhoodID { get; set; }
-        public string Name { get; set; }
-        public string URLName { get; set; }
-        public string AdminEmail { get; set; }
-        public string AdminPassPhrase { get; set; }
-        public string AdminUserName { get; set; }
+        public int OptionTypeID { get; set; }
+        public string OptionTypeName { get; set; }
     
-        public virtual ICollection<House> Houses { get; set; }
         public virtual ICollection<Option> Options { get; set; }
     }
 }
