@@ -23,7 +23,7 @@ namespace GreenLight.Controllers
         [AllowAnonymous]
         public ActionResult Login(Neighborhood neighborhood, string returnUrl)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(neighborhood.AdminUserName) || string.IsNullOrWhiteSpace(neighborhood.AdminPassPhrase))
             {
                 return View(neighborhood);
             }
