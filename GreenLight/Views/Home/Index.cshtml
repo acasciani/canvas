@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<script src="~/Scripts/jquery.canvasjs.min.js"></script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var chart = new CanvasJS.Chart("chartContainerTotal",
+        {
+            title: {
+                text: "Responses"
+            },
+            animationEnabled: true,
+            data: [
+            {
+                type: "doughnut",
+                startAngle: 60,
+                toolTipContent: "{legendText}: {y} - <strong>#percent% </strong>",
+                showInLegend: true,
+                dataPoints: [
+                    @foreach (var data in ViewBag.LatestResponsesReceived)
+        {
+            @:{ y: @Html.Raw(data.Count) , indexLabel: "@Html.Raw(data.IndexLabel)" + " #percent%", legendText: "@Html.Raw(data.Legend)" },
+                    }
+                ]
+            }
+            ]
+        });
+
+        chart.render();
+
+        // add the canvassed/not canvassed yet
+        var chart = new CanvasJS.Chart("chartContainerCanvassed",
+        {
+            title: {
+                text: "Houses Canvassed v. Houses Not Yet Canvassed"
+            },
+            animationEnabled: true,
+            data: [
+            {
+                type: "doughnut",
+                startAngle: 60,
+                toolTipContent: "{legendText}: {y} - <strong>#percent% </strong>",
+                showInLegend: true,
+                dataPoints: [
+                    @foreach (var data in ViewBag.HousesCanvassedStats)
+        {
+            @:{ y: @Html.Raw(data.Count) , indexLabel: "@Html.Raw(data.IndexLabel)" + " #percent%", legendText: "@Html.Raw(data.Legend)" },
+                    }
+                ]
+            }
+            ]
+        });
+
+        chart.render();
+
+        // add teh committed/uncommitted
+        var chart = new CanvasJS.Chart("chartContainerCommitted",
+        {
+            title: {
+                text: "Signed Up/WILL Sign Up v. Houses Not Committed"
+            },
+            animationEnabled: true,
+            data: [
+            {
+                type: "doughnut",
+                startAngle: 60,
+                toolTipContent: "{legendText}: {y} - <strong>#percent% </strong>",
+                showInLegend: true,
+                dataPoints: [
+                    @foreach (var data in ViewBag.HousesNotYetCommitted)
+        {
+            @:{ y: @Html.Raw(data.Count) , indexLabel: "@Html.Raw(data.IndexLabel)" + " #percent%", legendText: "@Html.Raw(data.Legend)" },
+                    }
+                ]
+            }
+            ]
+        });
+
+        chart.render();
+    }
+</script>
+
+<div class="jumbotron">
+    <h1>Welcome @Html.Raw(ViewBag.Neighborhood.Name) Friends!</h1>
+    <p class="lead" style="font-weight:bold">Help expand the options for high-speed internet in your neighborhood</p>
+    <p>Currently Time Warner Cable is the only provider of high-speed internet in your neighborhood, but that can change! Help grow support for a local fiber solution company.</p>
+    <p><a href="/HousesToCanvas" class="btn btn-primary btn-lg">Helping to Canvas? Click here to see which houses need to be visited &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>Using the below analytics</h3>
+        <ul>
+            <li><strong>Responses</strong> shows how many of each response have been received (e.g. Already signed up, will sign up, no interest, no answer)</li>
+            <li><strong>Houses Canvassed v. Houses Not Yet Canvassed</strong> shows how much work needs to be completed in reaching out to the neighborhood and informing neighbors of Greenlight</li>
+            <li><strong>Signed Up/WILL Sign Up v. Houses Not Committed</strong> shows how many responses received in getting Greenlight (a goal of 100 is a <b>MUST</b>). Houses committed includes those that have
+             signed up or will sign up. Everything else is included in Not Committed (including those not yet canvassed)</li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div id="chartContainerTotal" style="height: 300px; width: 100%;"></div>
+    </div>
+
+    <div class="col-sm-6">
+        <div id="chartContainerCanvassed" style="height: 300px; width: 100%;"></div>
+    </div>
+
+    <div class="col-sm-6">
+        <div id="chartContainerCommitted" style="height: 300px; width: 100%;"></div>
+    </div>
+</div>

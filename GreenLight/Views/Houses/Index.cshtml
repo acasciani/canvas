@@ -1,0 +1,40 @@
+﻿@model IEnumerable<GreenLight.House>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Target Neighborhood</h2>
+
+<p>
+    @Html.ActionLink("Add New House", "Create")
+</p>
+
+@if (Model.Count() > 0) { 
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td class="col-xs-8">
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td class="text-right">
+                @Html.ActionLink("Edit", "Edit", new { id = item.HouseID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.HouseID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.HouseID })
+            </td>
+        </tr>
+    }
+
+    </table>
+}
+else
+{
+    <strong>No houses added</strong>
+}

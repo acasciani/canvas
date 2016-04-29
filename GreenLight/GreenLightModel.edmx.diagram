@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="cd29aab305784fa495e38bff7342acbb" Name="Diagram1">
+        <EntityTypeShape EntityType="GreenLightModel.House" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenLightModel.Respons" Width="1.5" PointX="8.5" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="GreenLightModel.Visit" Width="2.375" PointX="3.375" PointY="0.875" IsExpanded="true" />
+        <AssociationConnector Association="GreenLightModel.FK_Visits_Houses" ManuallyRouted="false" />
+        <AssociationConnector Association="GreenLightModel.FK_Visits_Responses" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GreenLightModel.Neighborhood" Width="1.5" PointX="0.75" PointY="5.25" />
+        <AssociationConnector Association="GreenLightModel.FK_Houses_Neighborhoods" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

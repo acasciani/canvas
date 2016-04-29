@@ -1,0 +1,35 @@
+﻿@model GreenLight.Neighborhood
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "Login failed. Check your login details.");
+    <div>
+        <fieldset>
+            <div class="editor-label">
+                @Html.LabelFor(u => u.AdminUserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(u => u.AdminUserName)
+                @Html.ValidationMessageFor(u => u.AdminUserName)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(u => u.AdminPassPhrase)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(u => u.AdminPassPhrase)
+                @Html.ValidationMessageFor(u => u.AdminPassPhrase)
+            </div>
+            <input type="submit" value="Log In" />
+        </fieldset>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

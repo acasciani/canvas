@@ -1,0 +1,112 @@
+﻿<script src="https://maps.googleapis.com/maps/api/js?sensor=true" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var markers = {};
+
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                zoom: 17,
+                center: { lat: 43.139842, lng: -77.539513 }
+            });
+
+            $.get("/HousesToCanvas/HousesLeftToCanvas", function (data) {
+
+                for (var i = 0; i < data.length; i++) {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP,
+                        position: { lat: data[i].Latitude, lng: data[i].Longitude },
+                        title: data[i].Address,
+                        houseID: data[i].HouseID
+                    });
+
+                    markers[data[i].HouseID] = marker;
+
+                    marker.addListener('click', function () {
+                        clickPoint(this.houseID, this.title);
+                    });
+                }
+
+            });
+
+        }
+
+        function clickPoint(houseID, address) {
+            if (address) {
+                $('.modal-title').text('Add Response - ' + address);
+            }
+
+            $('#btnSaveChanges').data('houseId', houseID);
+            $('#addNewResponse').modal('show');
+        }
+
+        initMap();
+
+        $('#btnSaveChanges').click(function () {
+            var houseID = $('#btnSaveChanges').data('houseId');
+            var responseID = $('#ResponseID').val();
+            var notes = $('#Notes').val();
+
+            $.ajax({
+                url: "/HousesToCanvas/Visited",
+                type: "Post",
+                data: JSON.stringify([parseInt(houseID), parseInt(responseID), notes]), 
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    console.log('success... trying to remove marker');
+                    var marker = markers[houseID];
+                    marker.setMap(null);
+                    console.log('marker removed');
+
+                    $('#addNewResponse').modal('hide');
+                },
+                error: function () { console.log('error'); }
+            });
+            
+
+        });
+    });
+</script>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Houses to Canvas</h2>
+
+
+<div id="map_canvas" style="width: 100%; height: 728px; margin-bottom: 2px;">
+</div>
+
+<div class="modal fade add-new-response" tabindex="-1" role="dialog" aria-labelledby="addNewResponse" id="addNewResponse">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Response</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    @Html.Label("ResponseID", "Response", new { @class = "control-label col-xs-12" })
+                    <div class="col-xs-12">
+                        @Html.DropDownList("ResponseID", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Notes", "Response Notes", new { @class = "control-label col-xs-12" })
+                    <div class="col-xs-12">
+                        @Html.Editor("Notes", new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSaveChanges" data-house-id="">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

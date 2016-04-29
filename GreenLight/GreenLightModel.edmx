@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="GreenLightModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Houses">
+          <Key>
+            <PropertyRef Name="HouseID" />
+          </Key>
+          <Property Name="HouseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="50" />
+          <Property Name="Latitude" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="Longitude" Type="decimal" Precision="9" Scale="6" />
+          <Property Name="NeighborhoodID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Neighborhoods">
+          <Key>
+            <PropertyRef Name="NeighborhoodID" />
+          </Key>
+          <Property Name="NeighborhoodID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="URLName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AdminEmail" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="AdminPassPhrase" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="AdminUserName" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Responses">
+          <Key>
+            <PropertyRef Name="ResponseID" />
+          </Key>
+          <Property Name="ResponseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Visits">
+          <Key>
+            <PropertyRef Name="VisitID" />
+          </Key>
+          <Property Name="VisitID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HouseID" Type="int" Nullable="false" />
+          <Property Name="ResponseID" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="varchar" MaxLength="200" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Houses_Neighborhoods">
+          <End Role="Neighborhoods" Type="Self.Neighborhoods" Multiplicity="1" />
+          <End Role="Houses" Type="Self.Houses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Neighborhoods">
+              <PropertyRef Name="NeighborhoodID" />
+            </Principal>
+            <Dependent Role="Houses">
+              <PropertyRef Name="NeighborhoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_Houses">
+          <End Role="Houses" Type="Self.Houses" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Houses">
+              <PropertyRef Name="HouseID" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="HouseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_Responses">
+          <End Role="Responses" Type="Self.Responses" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Responses">
+              <PropertyRef Name="ResponseID" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ResponseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GreenLightModelStoreContainer">
+          <EntitySet Name="Houses" EntityType="Self.Houses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Neighborhoods" EntityType="Self.Neighborhoods" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Responses" EntityType="Self.Responses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Visits" EntityType="Self.Visits" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Houses_Neighborhoods" Association="Self.FK_Houses_Neighborhoods">
+            <End Role="Neighborhoods" EntitySet="Neighborhoods" />
+            <End Role="Houses" EntitySet="Houses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_Houses" Association="Self.FK_Visits_Houses">
+            <End Role="Houses" EntitySet="Houses" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_Responses" Association="Self.FK_Visits_Responses">
+            <End Role="Responses" EntitySet="Responses" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GreenLightModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="House">
+          <Key>
+            <PropertyRef Name="HouseID" />
+          </Key>
+          <Property Name="HouseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_Houses" FromRole="Houses" ToRole="Visits" />
+          <Property Name="Latitude" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="Longitude" Type="Decimal" Precision="9" Scale="6" />
+          <Property Name="NeighborhoodID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Neighborhood" Relationship="GreenLightModel.FK_Houses_Neighborhoods" FromRole="House" ToRole="Neighborhood" />
+        </EntityType>
+        <EntityType Name="Respons">
+          <Key>
+            <PropertyRef Name="ResponseID" />
+          </Key>
+          <Property Name="ResponseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_Responses" FromRole="Responses" ToRole="Visits" />
+          <Property Name="SortOrder" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Visit">
+          <Key>
+            <PropertyRef Name="VisitID" />
+          </Key>
+          <Property Name="VisitID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HouseID" Type="Int32" Nullable="false" />
+          <Property Name="ResponseID" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="House" Relationship="Self.FK_Visits_Houses" FromRole="Visits" ToRole="Houses" />
+          <NavigationProperty Name="Respons" Relationship="Self.FK_Visits_Responses" FromRole="Visits" ToRole="Responses" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <Association Name="FK_Visits_Houses">
+          <End Role="Houses" Type="Self.House" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Houses">
+              <PropertyRef Name="HouseID" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="HouseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_Responses">
+          <End Role="Responses" Type="Self.Respons" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Responses">
+              <PropertyRef Name="ResponseID" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ResponseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GreenLightEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Houses" EntityType="Self.House" />
+          <EntitySet Name="Responses" EntityType="Self.Respons" />
+          <EntitySet Name="Visits" EntityType="Self.Visit" />
+          <AssociationSet Name="FK_Visits_Houses" Association="Self.FK_Visits_Houses">
+            <End Role="Houses" EntitySet="Houses" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_Responses" Association="Self.FK_Visits_Responses">
+            <End Role="Responses" EntitySet="Responses" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <EntitySet Name="Neighborhoods" EntityType="GreenLightModel.Neighborhood" />
+          <AssociationSet Name="FK_Houses_Neighborhoods" Association="GreenLightModel.FK_Houses_Neighborhoods">
+            <End Role="Neighborhood" EntitySet="Neighborhoods" />
+            <End Role="House" EntitySet="Houses" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Neighborhood">
+          <Key>
+            <PropertyRef Name="NeighborhoodID" />
+          </Key>
+          <Property Name="NeighborhoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="URLName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AdminEmail" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="AdminPassPhrase" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AdminUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Houses" Relationship="GreenLightModel.FK_Houses_Neighborhoods" FromRole="Neighborhood" ToRole="House" />
+        </EntityType>
+        <Association Name="FK_Houses_Neighborhoods">
+          <End Type="GreenLightModel.Neighborhood" Role="Neighborhood" Multiplicity="1" />
+          <End Type="GreenLightModel.House" Role="House" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Neighborhood">
+              <PropertyRef Name="NeighborhoodID" />
+            </Principal>
+            <Dependent Role="House">
+              <PropertyRef Name="NeighborhoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GreenLightModelStoreContainer" CdmEntityContainer="GreenLightEntities">
+          <EntitySetMapping Name="Houses">
+            <EntityTypeMapping TypeName="GreenLightModel.House">
+              <MappingFragment StoreEntitySet="Houses">
+                <ScalarProperty Name="NeighborhoodID" ColumnName="NeighborhoodID" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="HouseID" ColumnName="HouseID" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Responses">
+            <EntityTypeMapping TypeName="GreenLightModel.Respons">
+              <MappingFragment StoreEntitySet="Responses">
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ResponseID" ColumnName="ResponseID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Visits">
+            <EntityTypeMapping TypeName="GreenLightModel.Visit">
+              <MappingFragment StoreEntitySet="Visits">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="VisitID" ColumnName="VisitID" />
+                <ScalarProperty Name="HouseID" ColumnName="HouseID" />
+                <ScalarProperty Name="ResponseID" ColumnName="ResponseID" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Neighborhoods">
+            <EntityTypeMapping TypeName="GreenLightModel.Neighborhood">
+              <MappingFragment StoreEntitySet="Neighborhoods">
+                <ScalarProperty Name="AdminUserName" ColumnName="AdminUserName" />
+                <ScalarProperty Name="AdminPassPhrase" ColumnName="AdminPassPhrase" />
+                <ScalarProperty Name="AdminEmail" ColumnName="AdminEmail" />
+                <ScalarProperty Name="URLName" ColumnName="URLName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NeighborhoodID" ColumnName="NeighborhoodID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
