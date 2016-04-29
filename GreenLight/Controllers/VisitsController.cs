@@ -70,6 +70,7 @@ namespace GreenLight.Controllers
         {
             if (ModelState.IsValid)
             {
+                visit.CreateDate = DateTime.Now.ToUniversalTime();
                 db.Visits.Add(visit);
                 db.SaveChanges();
                 return RedirectToAction("Index");

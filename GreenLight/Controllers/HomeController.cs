@@ -109,9 +109,9 @@ namespace GreenLight.Controllers
         public ActionResult Welcome([Bind(Include = "AdminEmail,AdminPassPhrase,AdminUserName,Name,NeighborhoodID,URLName")] Neighborhood neighborhood)
         {
             // check to make sure the username, neighborhood name and route are not already in user
-            string username = neighborhood.AdminUserName.ToUpper();
-            string name = neighborhood.Name.Trim().ToUpper();
-            string route = neighborhood.URLName.Trim().ToUpper();
+            string username = (neighborhood.AdminUserName ?? "").ToUpper();
+            string name = (neighborhood.Name ?? "").Trim().ToUpper();
+            string route = (neighborhood.URLName ?? "").Trim().ToUpper();
 
             int countName = db.Neighborhoods.Where(i => i.Name.Trim().ToUpper() == name).Count();
             int countRoute = db.Neighborhoods.Where(i => i.URLName.Trim().ToUpper() == route).Count();
@@ -119,17 +119,17 @@ namespace GreenLight.Controllers
 
             if (countName > 0)
             {
-                ModelState.AddModelError("", string.Format("The neighborhood name ({0}) is already in use. Use a different one.", neighborhood.Name.Trim()));
+                ModelState.AddModelError("", string.Format("The neighborhood name ({0}) is already in use. Use a different one.", (neighborhood.Name ?? "").Trim()));
             }
 
             if (countRoute > 0)
             {
-                ModelState.AddModelError("", string.Format("The neighborhood url ({0}) is already in use. Use a different one.", neighborhood.URLName.Trim()));
+                ModelState.AddModelError("", string.Format("The neighborhood url ({0}) is already in use. Use a different one.", (neighborhood.URLName ?? "").Trim()));
             }
 
             if (countUser > 0)
             {
-                ModelState.AddModelError("", string.Format("The username ({0}) is already in use. Use a different one.", neighborhood.AdminUserName));
+                ModelState.AddModelError("", string.Format("The username ({0}) is already in use. Use a different one.", (neighborhood.AdminUserName ?? "")));
             }
 
             if (ModelState.IsValid)
@@ -138,6 +138,15 @@ namespace GreenLight.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Login", "Account");
             }
+
+            List<NeighborhoodSimple> list = db.Neighborhoods.OrderBy(i => i.NeighborhoodID).Select(i => new NeighborhoodSimple()
+            {
+                Name = i.Name,
+                NeighborhoodID = i.NeighborhoodID,
+                Route = i.URLName
+            }).ToList();
+
+            ViewBag.Neighborhoods = list;
 
             return View(neighborhood);
         }

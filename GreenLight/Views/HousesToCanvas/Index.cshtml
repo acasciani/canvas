@@ -7,8 +7,10 @@
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map_canvas'), {
-                zoom: 17,
-                center: { lat: 43.139842, lng: -77.539513 }
+                //zoom: 17,
+                zoom: @Html.Raw(ViewBag.ZoomIndex),
+                center: { lat: @Html.Raw(ViewBag.CenterLatitude), lng: @Html.Raw(ViewBag.CenterLongitude) }
+                //center: { lat: 43.139842, lng: -77.539513 }
             });
 
             $.get("/HousesToCanvas/HousesLeftToCanvas", function (data) {

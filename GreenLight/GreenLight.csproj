@@ -132,6 +132,7 @@
     <Compile Include="Controllers\HousesController.cs" />
     <Compile Include="Controllers\HousesToCanvasController.cs" />
     <Compile Include="Controllers\LoadNeighborhoodController.cs" />
+    <Compile Include="Controllers\NeighborhoodsController.cs" />
     <Compile Include="Controllers\OptionsController.cs" />
     <Compile Include="Controllers\VisitsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -155,6 +156,10 @@
     <Compile Include="House.cs">
       <DependentUpon>GreenLightModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Metadata\House.Metadata.cs" />
+    <Compile Include="Models\Metadata\Neighborhood.Metadata.cs" />
+    <Compile Include="Models\Metadata\Option.Metadata.cs" />
+    <Compile Include="Models\Metadata\Visit.Metadata.cs" />
     <Compile Include="Models\NeighborhoodSimple.cs" />
     <Compile Include="Neighborhood.cs">
       <DependentUpon>GreenLightModel.tt</DependentUpon>
@@ -245,6 +250,7 @@
     <Content Include="Views\Options\Details.cshtml" />
     <Content Include="Views\Options\Edit.cshtml" />
     <Content Include="Views\Options\Index.cshtml" />
+    <Content Include="Views\Neighborhoods\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

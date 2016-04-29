@@ -27,6 +27,9 @@
           <Property Name="AdminEmail" Type="varchar" MaxLength="150" Nullable="false" />
           <Property Name="AdminPassPhrase" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="AdminUserName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Latitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+          <Property Name="Longitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+          <Property Name="ZoomIndex" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Options">
           <Key>
@@ -253,6 +256,9 @@
           <Property Name="AdminUserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Houses" Relationship="GreenLightModel.FK_Houses_Neighborhoods" FromRole="Neighborhood" ToRole="House" />
           <NavigationProperty Name="Options" Relationship="GreenLightModel.FK_Options_Neighborhoods" FromRole="Neighborhood" ToRole="Option" />
+          <Property Name="Latitude" Type="Decimal" Nullable="false" Precision="9" Scale="6" />
+          <Property Name="Longitude" Type="Decimal" Nullable="false" Precision="9" Scale="6" />
+          <Property Name="ZoomIndex" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_Houses_Neighborhoods">
           <End Type="GreenLightModel.Neighborhood" Role="Neighborhood" Multiplicity="1" />
@@ -351,6 +357,9 @@
           <EntitySetMapping Name="Neighborhoods">
             <EntityTypeMapping TypeName="GreenLightModel.Neighborhood">
               <MappingFragment StoreEntitySet="Neighborhoods">
+                <ScalarProperty Name="ZoomIndex" ColumnName="ZoomIndex" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="AdminUserName" ColumnName="AdminUserName" />
                 <ScalarProperty Name="AdminPassPhrase" ColumnName="AdminPassPhrase" />
                 <ScalarProperty Name="AdminEmail" ColumnName="AdminEmail" />

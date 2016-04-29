@@ -26,6 +26,9 @@ namespace GreenLight
         public string AdminEmail { get; set; }
         public string AdminPassPhrase { get; set; }
         public string AdminUserName { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public int ZoomIndex { get; set; }
     
         public virtual ICollection<House> Houses { get; set; }
         public virtual ICollection<Option> Options { get; set; }

@@ -34,6 +34,19 @@ namespace GreenLight.Controllers
 
             ViewBag.ResponseID = new SelectList(db.Responses.OrderBy(i => i.SortOrder), "ResponseID", "Name");
             ViewBag.Neighborhood = CacheManager.GetNeighborhood(NeighborhoodID.Value);
+
+            var mapSettings = db.Neighborhoods.Where(i => i.NeighborhoodID == NeighborhoodID.Value).Select(i => new
+            {
+                CenterLatitude = i.Latitude,
+                CenterLongitude = i.Longitude,
+                ZoomIndex = i.ZoomIndex
+            }).First();
+
+            ViewBag.CenterLatitude = mapSettings.CenterLatitude;
+            ViewBag.CenterLongitude = mapSettings.CenterLongitude;
+            ViewBag.ZoomIndex = mapSettings.ZoomIndex;
+            
+
             return View();
         }
 
@@ -46,7 +59,7 @@ namespace GreenLight.Controllers
             }
 
             List<int> housesWithResponses = db.Visits.Where(i => i.House.NeighborhoodID == NeighborhoodID.Value).Select(i => i.HouseID).Distinct().ToList();
-            var housesWithNoResponses = db.Houses.Where(i=>i.NeighborhoodID == NeighborhoodID.Value).Where(i => !housesWithResponses.Contains(i.HouseID))
+            var housesWithNoResponses = db.Houses.Where(i=>i.NeighborhoodID == NeighborhoodID.Value && i.Latitude.HasValue && i.Longitude.HasValue).Where(i => !housesWithResponses.Contains(i.HouseID))
                 .Select(i => new
                 {
                     Address = i.Address,
@@ -67,7 +80,7 @@ namespace GreenLight.Controllers
 
             db.Visits.Add(new Visit()
             {
-                CreateDate = DateTime.Now,
+                CreateDate = DateTime.Now.ToUniversalTime(),
                 HouseID = houseID,
                 Notes = notes,
                 ResponseID = responseID
@@ -84,7 +97,7 @@ namespace GreenLight.Controllers
 
             foreach (House house in housesToUpdate)
             {
-                Address address = geocoder.Geocode(string.Format("{0}, Rochester, NY 14610", house.Address)).FirstOrDefault();
+                Address address = geocoder.Geocode(string.Format("{0}, {1}, NY {2}", house.Address, house.City, house.ZipCode)).FirstOrDefault();
 
                 if (address == null)
                 {
