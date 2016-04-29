@@ -17,8 +17,14 @@ namespace GreenLight.Controllers
             public string Legend { get; set; }
         }
 
+        [Serializable]
+        public class NeighborhoodList
+        {
+            public List<NeighborhoodSimple> Neighborhoods { get; set; }
+        }
 
-        GreenLightEntities db = new GreenLightEntities();
+
+        private GreenLightEntities db = new GreenLightEntities();
 
         public ActionResult Index()
         {
@@ -26,7 +32,7 @@ namespace GreenLight.Controllers
 
             if (neighborhood == null)
             {
-                return RedirectToAction("About", "Home");
+                return RedirectToAction("Welcome", "Home");
             }
 
             List<int> houseIDsInNeighborhood = db.Houses.Where(i => i.NeighborhoodID == neighborhood.NeighborhoodID).Select(i => i.HouseID).ToList();
@@ -84,9 +90,61 @@ namespace GreenLight.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Welcome()
         {
-            ViewBag.Message = "Your application description page.";
+            List<NeighborhoodSimple> list = db.Neighborhoods.OrderBy(i => i.NeighborhoodID).Select(i => new NeighborhoodSimple()
+            {
+                Name = i.Name,
+                NeighborhoodID = i.NeighborhoodID,
+                Route = i.URLName
+            }).ToList();
+
+            ViewBag.Neighborhoods = list;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Welcome([Bind(Include = "AdminEmail,AdminPassPhrase,AdminUserName,Name,NeighborhoodID,URLName")] Neighborhood neighborhood)
+        {
+            // check to make sure the username, neighborhood name and route are not already in user
+            string username = neighborhood.AdminUserName.ToUpper();
+            string name = neighborhood.Name.Trim().ToUpper();
+            string route = neighborhood.URLName.Trim().ToUpper();
+
+            int countName = db.Neighborhoods.Where(i => i.Name.Trim().ToUpper() == name).Count();
+            int countRoute = db.Neighborhoods.Where(i => i.URLName.Trim().ToUpper() == route).Count();
+            int countUser = db.Neighborhoods.Where(i => i.AdminUserName.ToUpper() == username).Count();
+
+            if (countName > 0)
+            {
+                ModelState.AddModelError("", string.Format("The neighborhood name ({0}) is already in use. Use a different one.", neighborhood.Name.Trim()));
+            }
+
+            if (countRoute > 0)
+            {
+                ModelState.AddModelError("", string.Format("The neighborhood url ({0}) is already in use. Use a different one.", neighborhood.URLName.Trim()));
+            }
+
+            if (countUser > 0)
+            {
+                ModelState.AddModelError("", string.Format("The username ({0}) is already in use. Use a different one.", neighborhood.AdminUserName));
+            }
+
+            if (ModelState.IsValid)
+            {
+                db.Neighborhoods.Add(neighborhood);
+                db.SaveChanges();
+                return RedirectToAction("Login", "Account");
+            }
+
+            return View(neighborhood);
+        }
+
+        public ActionResult Donate()
+        {
+
 
             return View();
         }
@@ -96,6 +154,15 @@ namespace GreenLight.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

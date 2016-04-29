@@ -34,7 +34,7 @@ namespace GreenLight.Controllers
             if (user != null)
             {
                 FormsAuthentication.SetAuthCookie(user.NeighborhoodID.ToString(), true);
-                return RedirectToAction("Index", "Houses");
+                return RedirectToAction("Index", "LoadNeighborhood", new { neighborhood = user.NeighborhoodID });
             }
             else
             {

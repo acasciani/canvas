@@ -11,7 +11,8 @@ namespace GreenLight.Controllers
         // GET: LoadNeighborhood
         public ActionResult Index(string neighborhood)
         {
-            int neighborhoodID = CacheManager.GetNeighborhoodID(neighborhood).Value;
+            int _id;
+            int neighborhoodID = int.TryParse(neighborhood, out _id) ? _id : CacheManager.GetNeighborhoodID(neighborhood).Value;
 
             Session["NeighborhoodID"] = neighborhoodID;
 

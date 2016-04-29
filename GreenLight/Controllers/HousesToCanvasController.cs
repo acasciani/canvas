@@ -8,22 +8,52 @@ using System.Web.Mvc;
 
 namespace GreenLight.Controllers
 {
+    [AllowAnonymous]
     public class HousesToCanvasController : Controller
     {
         private GreenLightEntities db = new GreenLightEntities();
 
+        private int? NeighborhoodID { get; set; }
+
+        public HousesToCanvasController()
+        {
+            int _id;
+            if (int.TryParse((System.Web.HttpContext.Current.Session["NeighborhoodID"] ?? "").ToString(), out _id))
+            {
+                NeighborhoodID = _id;
+            }
+        }
+
         // GET: HousesToCanvas
         public ActionResult Index()
         {
+            if (!NeighborhoodID.HasValue)
+            {
+                return RedirectToAction("Welcome", "Home");
+            }
+
             ViewBag.ResponseID = new SelectList(db.Responses.OrderBy(i => i.SortOrder), "ResponseID", "Name");
+            ViewBag.Neighborhood = CacheManager.GetNeighborhood(NeighborhoodID.Value);
             return View();
         }
 
         [HttpGet]
         public JsonResult HousesLeftToCanvas()
         {
-            List<int> housesWithResponses = db.Visits.Select(i=>i.HouseID).Distinct().ToList();
-            var housesWithNoResponses = db.Houses.Where(i => !housesWithResponses.Contains(i.HouseID));
+            if (!NeighborhoodID.HasValue)
+            {
+                return Json(new object(), JsonRequestBehavior.AllowGet);
+            }
+
+            List<int> housesWithResponses = db.Visits.Where(i => i.House.NeighborhoodID == NeighborhoodID.Value).Select(i => i.HouseID).Distinct().ToList();
+            var housesWithNoResponses = db.Houses.Where(i=>i.NeighborhoodID == NeighborhoodID.Value).Where(i => !housesWithResponses.Contains(i.HouseID))
+                .Select(i => new
+                {
+                    Address = i.Address,
+                    HouseID = i.HouseID,
+                    Latitude = i.Latitude,
+                    Longitude = i.Longitude
+                }).ToList();
 
             return Json(housesWithNoResponses, JsonRequestBehavior.AllowGet);
         }
